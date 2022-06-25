@@ -5,11 +5,13 @@ import DisplayAll from './components/DisplayAll';
 function App() {
   return (
     <BrowserRouter>
-    <h2>Product</h2>
+    <div className="App">
+      <h1>Product Manager</h1>
       <Routes>
         <Route path="/" element={<DisplayAll />}>
         </Route>
       </Routes>
+    </div>
     </BrowserRouter>
   );
 }

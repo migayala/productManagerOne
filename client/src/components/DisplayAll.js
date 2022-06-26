@@ -1,56 +1,42 @@
-import React, { useState } from 'react'
-import axios from 'axios';
-const ProductForm = () => {
-    //keep track of what is being typed via useState hook
-    const [Title, setTitle] = useState(""); 
-    const [Price, setPrice] = useState("");
-    const [Description, setDescription] = useState("");
-    
-    const onSubmitHandler = (e) => {
-        
-        e.preventDefault();
-        
-        axios.post('http://localhost:8000/api/product', {
-            Title,    
-            Price,
-            Description,      
-        })
-            .then(res=>{
-                console.log(res); 
-                console.log(res.data);
-                setTitle("");
-                setPrice("");
-                setDescription("");
-            })
-            .catch(err=>console.log(err))
-    }
-    
-    return (
-        <form onSubmit={onSubmitHandler}>
-            <p>
-                <label>Title</label><br/>
-                <input type="text" onChange = {(e)=>setTitle(e.target.value)}
-                    value={Title}
-                    name="Title"
-                />
-            </p>
-            <p>
-                <label>Price</label><br/>
-                <input type="text" onChange = {(e)=>setPrice(e.target.value)}
-                    value={Price}
-                    name="Price"
-                />
-            </p>
-            <p>
-                <label>Description</label><br/>
-                <input type="text" onChange = {(e)=>setDescription(e.target.value)}
-                    value={Description}
-                    name="Description"
-                />
-            </p>
-            <input className = "button" type="submit" value="Create"/>
-        </form>
-    )
-}
-export default ProductForm;
+import React, { useEffect } from "react";
+import axios from "axios";
+import { Link } from "react-router-dom";
 
+const DisplayAll = (props) => {
+    
+    //Any change that happens in create, is available here as well due to state lifted and passed down from their common parent (Main)
+    const { productList, setProductList} = props;
+
+    //On initial render of this component, this useEffect will run its request to our Server
+    useEffect(() => {
+        axios.get("http://localhost:8000/api/product")
+            .then((res) => {
+                console.log(res.data);
+                setProductList(res.data);
+                
+            })
+            .catch((err) => console.log(err));
+    }, []); //An empty dependency array means the useEffect is not listening for any state change. 
+                //It will run only on a complete render (e.g. initial render, refresh, or coming back to this component from another)
+
+    return (
+        <div>
+            <header>
+                All Products:
+            </header>
+            {
+                productList.map((product, index) => (
+                    <div key={index}>
+                        {/* This is where :id in our app.js path gets its value... We can access this info via props */}
+                        {/* Note: when styling, the DOM read "Link" as an a tag */}
+                        <Link to={`/product/${product._id}`}>
+                            {product.title}
+                        </Link>
+                    </div>
+                ))
+            }
+        </div>
+    );
+};
+
+export default DisplayAll;

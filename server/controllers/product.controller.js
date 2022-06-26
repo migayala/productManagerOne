@@ -13,6 +13,11 @@ const getAllProducts = (req, res) => {
     .then((allProducts) => res.json(allProducts))
     .catch(err => res.status(400).json(err));
 }
+const getOneProduct = (req, res) => {
+    Product.findOne({_id: req.params.id})
+    .then((oneProduct) => res.json(oneProduct))
+    .catch(err => res.status(400).json(err));
+}
 const findOneAndUpdate = (req, res) => {
     Product.findOneAndUpdate({ _id: req.params.id }, req.body, { 
         new: true, 
@@ -21,8 +26,10 @@ const findOneAndUpdate = (req, res) => {
     .then(updatedProduct => res.json(updatedProduct))
     .catch(err => res.status(400).json(err));
 }
+
 module.exports = {
     createNewProduct,
     getAllProducts,
     findOneAndUpdate,
+    getOneProduct,
 };
